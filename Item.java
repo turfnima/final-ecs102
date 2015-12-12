@@ -50,4 +50,10 @@ public class Item {
       ans=(name+" "+price+"$ "+" "+quantity+"\n");
         return ans;
     }
+    public String toStringNoSign()
+    {
+      String ans="";
+      ans=(name+" "+price+" "+quantity+"\n");
+        return ans;
+    }
 }

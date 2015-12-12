@@ -17,7 +17,7 @@ There is also an option for vending machine workers to check the current invento
 //package ecs102_final;
 import java.util.Scanner;
 import java.io.*;
-
+import java.util.Random;
 /**
  *
  * @author turfmacia
@@ -41,6 +41,7 @@ public class Ecs102_final {
      
      int choice;
      String buffer;
+     
      Item []storage= new Item[maxIndex];
      Item []change= new Item[5];
      //input scanner
@@ -49,7 +50,13 @@ public class Ecs102_final {
      //read in the file.
      Scanner inventory= new Scanner(new File("inventory.txt"));
      Scanner pass= new Scanner( new File("inventory.txt"));
-      
+     
+     //first we check the inventory to see what maxIndex is.
+     if(searchLine(pass,"inventory:"))
+       { buffer=pass.nextLine();// adjust the max index so we dont fill array with wrong type.
+       maxIndex=Integer.parseInt(buffer);}
+     
+     
      //assign every object in the array with an empty object.
      for(int i=0;i<maxIndex;i++)
      {  storage[i]=new Item();}
@@ -65,11 +72,33 @@ public class Ecs102_final {
      {
        //file writer
      PrintWriter fileOut=new PrintWriter("inventory1.txt");
+     
        System.out.println("Password correct!");
-       refill(inventory, storage, change);
+       //refill method
+       if(refill(inventory, storage, change)){
+         //following the previous format, we file out a new inventory.txt
+         fileOut.println("inventory:");
+         fileOut.println(maxIndex);
+         for(int i=0;i<maxIndex;i++){ 
+           fileOut.print(storage[i].toStringNoSign());
+         }
+         fileOut.println("changes:");
+         fileOut.println(5);
+         for(int i=0;i<5;i++){
+           fileOut.print(change[i].toStringNoSign());
+         }
+         fileOut.println("password:");
+         fileOut.println(buffer);
+       }
        fileOut.close();
+       inventory.close();
+       pass.close();
+       //we close the programm at this point.
+       return;
      }
      
+     
+     //then we see if there are payments.
      else if(userEnter.equals("1"))
        creditpay();
      else if(userEnter.equals("2"))
@@ -79,6 +108,10 @@ public class Ecs102_final {
      //if there were an error, we shut down the program.
       if(currentCash==-1) return;
      
+      //generate a random number to see if there can be a free item, the user is yet to know.
+      Random free=new Random();
+      if (0==free.nextInt(3))
+        ifFree=true;
      //take the input file of inventory and calculate
       System.out.print(message("order"));
       //use fill array to fill the storage array and out put what we have.
@@ -86,20 +119,28 @@ public class Ecs102_final {
       
      choice=usr.nextInt();
      if(choice>maxIndex||choice<0)System.out.print(message("do not exist"));
-     else 
-       charge=storage[choice].getPrice();
+     else if(ifFree){
+       System.out.print(message("grats"));
        System.out.println("Here is your "+storage[choice].getName());
+       storage[choice].sold();
+       System.out.print(message("nice day"));
+       return;
+     }
+     else
+       charge=storage[choice].getPrice();
+     System.out.println("Here is your "+storage[choice].getName());
      storage[choice].sold();
      System.out.println("Your total charge shall be "+ charge+" $");
      currentCash-=charge;
      if(userEnter.equals("3"))
-     System.out.println(change(currentCash));
-     else
+       System.out.println(change(currentCash));
+     
        System.out.print(message("nice day"));
      //
+     usr.close();
      inventory.close();
      pass.close();
-    System.out.println("This means we worked!");
+    
     
     }
     
@@ -123,7 +164,7 @@ public class Ecs102_final {
         
         return result;
     }
-    
+
     
         // will be used for out put messages.
    static String message(String message){
@@ -276,15 +317,21 @@ public class Ecs102_final {
    
    static boolean fillArray(Item[] array,Scanner in,String keyWords, String q){
      boolean ans=false;
+    
      int maxIndex=0;
      String buffer="";
      ans=searchLine(in,keyWords);
+     
      if(ans){
      buffer=in.nextLine();// adjust the max index so we dont fill array with wrong type.
-       maxIndex=Integer.parseInt(buffer);  
+     maxIndex=Integer.parseInt(buffer);  
        int i;
+       if(q.equals("sale")||q.equals("refill"))
          for(i=0;i<maxIndex;i++)
-       System.out.print(i+")"+checkInventory(array[i],in,q));
+         System.out.print(i+")"+checkInventory(array[i],in,q));
+       else
+         for(i=0;i<maxIndex;i++)
+         checkInventory(array[i],in,q);
          maxIndex=i-1;
        }
      return ans;
@@ -301,7 +348,9 @@ public class Ecs102_final {
        System.out.println("What are we refilling? 1) drinks;\n2) changes.");
        buffer=usr.nextLine();
          if(buffer.equals("1")){
+           ans=true;
            fillArray(forSale,in,"inventory:","refill");
+           fillArray(changes,in,"changes:","array");
            System.out.println("Please enter the refill selection.");
            s=usr.nextInt();
            System.out.print("You selected: "+forSale[s].name+".\n");
@@ -313,9 +362,14 @@ public class Ecs102_final {
            }
            forSale[s].addQuantity(add);
            System.out.println(add+" of the "+forSale[s].getName()+" has been added.");
-           repeat=2;
+           System.out.println("Are there anyother item to be refilled? \nenter 'y' if there is:");
+         if(usr.next().equals("y"))repeat=0;
+         else
+           repeat=3;
          }
        else if(buffer.equals("2")){
+         ans=true;
+         fillArray(forSale,in,"inventory:","array");
          fillArray(changes,in,"changes:","refill");
          System.out.println("Please enter the refill selection.");
          s=usr.nextInt();
@@ -328,13 +382,17 @@ public class Ecs102_final {
          }
          changes[s].addQuantity(add);
          System.out.println(add+" of the "+changes[s].getName()+" has been added.");
-         repeat=2;
+         System.out.println("Are there anyother item to be refilled? \nenter 'y' if ther is:");
+         if(usr.next().equals("y"))repeat=0;
+         else
+           repeat=3;
        }
        else{
          System.out.println("Wrong Input, please try again.");
            repeat+=1;
        }
      }
+     System.out.println(message("nice day"));
      return ans;
    }
    //a sort array method sorting items by their first letter, alphabratically.
