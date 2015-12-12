@@ -64,10 +64,10 @@ public class Ecs102_final {
      if(userEnter.equals(buffer))
      {
        //file writer
-     //PrintWriter fileOut=new PrintWriter("inventory1.txt");
+     PrintWriter fileOut=new PrintWriter("inventory1.txt");
        System.out.println("Password correct!");
        refill(inventory, storage, change);
-       //fileOut.close();
+       fileOut.close();
      }
      
      else if(userEnter.equals("1"))
