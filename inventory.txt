@@ -1,5 +1,5 @@
 inventory:
-7
+6
 pepsi 1.50 15
 coke  1.50 15
 mountain-dew 1.50 15
@@ -8,10 +8,11 @@ ginger-ale 1.50 15
 aquafina-pure-water 1.50 15
 
 changes:
+4
 1 15
 5 15
 10 15
 25 15
 
 password:
-refil07654$@
+abc

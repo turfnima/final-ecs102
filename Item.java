@@ -30,9 +30,15 @@ public class Item {
      {
        return price;
      }
-     void sold()
-     { quantity--;
-       
+     void sold(){
+     
+       quantity--;
+      
+     
+     }
+     void addQuantity(int q)
+     {
+       quantity=quantity+q;
      }
      String getName()
      {

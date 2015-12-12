@@ -17,6 +17,7 @@ There is also an option for vending machine workers to check the current invento
 //package ecs102_final;
 import java.util.Scanner;
 import java.io.*;
+
 /**
  *
  * @author turfmacia
@@ -30,12 +31,11 @@ public class Ecs102_final {
      */
     
     public static void main(String[] args) throws IOException {
-     //declaring inputs.   
+     //declaring inputs and outputs  
      String paymentChoice;
      int maxIndex=15;
      double currentCash=0.00;
      double charge=0.00;
-     
      boolean ifFree=false;
      String userEnter;
      
@@ -45,10 +45,11 @@ public class Ecs102_final {
      Item []change= new Item[5];
      //input scanner
      Scanner usr = new Scanner(System.in);
-
+     
      //read in the file.
      Scanner inventory= new Scanner(new File("inventory.txt"));
      Scanner pass= new Scanner( new File("inventory.txt"));
+      
      //assign every object in the array with an empty object.
      for(int i=0;i<maxIndex;i++)
      {  storage[i]=new Item();}
@@ -62,9 +63,11 @@ public class Ecs102_final {
      //if the someone entered the password, we switch to the refill selections
      if(userEnter.equals(buffer))
      {
-       
+       //file writer
+     //PrintWriter fileOut=new PrintWriter("inventory1.txt");
        System.out.println("Password correct!");
        refill(inventory, storage, change);
+       //fileOut.close();
      }
      
      else if(userEnter.equals("1"))
@@ -290,14 +293,41 @@ public class Ecs102_final {
    { boolean ans=false;
      Scanner usr=new Scanner(System.in);
      int repeat=0;
+     int s=-1;
+     int add=0;
+     String buffer="";
+     String filled="";
      while(repeat<2){
        System.out.println("What are we refilling? 1) drinks;\n2) changes.");
-         if(usr.nextLine().equals("1")){
-         fillArray(forSale,in,"inventory:","refill");
-         repeat=2;
+       buffer=usr.nextLine();
+         if(buffer.equals("1")){
+           fillArray(forSale,in,"inventory:","refill");
+           System.out.println("Please enter the refill selection.");
+           s=usr.nextInt();
+           System.out.print("You selected: "+forSale[s].name+".\n");
+           System.out.println("How many are we refilling: ");
+           add=usr.nextInt();
+           if(add>25) {
+             add=25;
+             System.out.println("The maximum allowed is 25. Only 25 of the "+forSale[s].getName()+" is accepted.");
+           }
+           forSale[s].addQuantity(add);
+           System.out.println(add+" of the "+forSale[s].getName()+" has been added.");
+           repeat=2;
          }
-       else if(usr.nextLine().equals("2")){
+       else if(buffer.equals("2")){
          fillArray(changes,in,"changes:","refill");
+         System.out.println("Please enter the refill selection.");
+         s=usr.nextInt();
+         System.out.print("You selected: "+changes[s].name+".\n");
+         System.out.println("How many are we refilling: ");
+         add=usr.nextInt();
+         if(add>25) {
+           add=25;
+           System.out.println("The maximum allowed is 25. Only 25 of the "+changes[s].getName()+" is accepted.");
+         }
+         changes[s].addQuantity(add);
+         System.out.println(add+" of the "+changes[s].getName()+" has been added.");
          repeat=2;
        }
        else{
@@ -307,4 +337,6 @@ public class Ecs102_final {
      }
      return ans;
    }
+   //a sort array method sorting items by their first letter, alphabratically.
+   
 }
