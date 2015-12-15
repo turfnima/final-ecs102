@@ -11,11 +11,8 @@ There is a random chance that the customer can get free item.
 Then there will be instructions saying the item is delivered.
 Then the vending machine will return changes using quarters if customer used cash prior.
 There is also an option for vending machine workers to check the current inventory of coins and items using a prepared .txt file, the computer will out put a txt file with each quantities and alert if anything need to be refilled.
-The .txt file can be modified easily to fit any purpose.
-we can modify the number, name, and price in the input files and the programm still gives right output.
-There is two arrays each reading items from the .txt file, and the output is subject to the txt files.
-There is a sortArray method, which will sort the sales item in alphabratical order.
-and there will be an output .txt file with the same name(and modified content with changes.).
+(I鈥檓 planning on using array list for coins)
+
  */
 //package ecs102_final;
 import java.util.Scanner;
@@ -43,8 +40,8 @@ public class Ecs102_final {
      String userEnter;
      
      int choice;
-     String buffer="";
-     String outTxt="";
+     String buffer;
+     
      
      //input scanner
      Scanner usr = new Scanner(System.in);
@@ -75,20 +72,28 @@ public class Ecs102_final {
      //if the someone entered the password, we switch to the refill selections
      if(userEnter.equals(buffer))
      {
-      
+       //file writer
+     PrintWriter fileOut=new PrintWriter("inventory.txt");
      
        System.out.println("Password correct!");
        //refill method
        if(refill(inventory, storage, change)){
          //following the previous format, we file out a new inventory.txt
-         PrintWriter fileOut=new PrintWriter("inventory.txt");
-         fileOut.print(toOutPut(storage,change,maxIndex, buffer));
-         fileOut.close();
+         sortArray(storage);
+         fileOut.println("inventory:");
+         fileOut.println(maxIndex);
+         for(int i=0;i<maxIndex;i++){ 
+           fileOut.print(storage[i].toStringNoSign());
+         }
+         fileOut.println("changes:");
+         fileOut.println(5);
+         for(int i=0;i<5;i++){
+           fileOut.print(change[i].toStringNoSign());
+         }
+         fileOut.println("password:");
+         fileOut.println(buffer);
        }
-        
-     
-       
-       
+       fileOut.close();
        inventory.close();
        pass.close();
        //we close the programm at this point.
@@ -97,8 +102,6 @@ public class Ecs102_final {
      
      
      //then we see if there are payments.
-     
-     
      else if(userEnter.equals("1"))
        creditpay();
      else if(userEnter.equals("2"))
@@ -116,7 +119,7 @@ public class Ecs102_final {
       System.out.print(message("order"));
       //use fill array to fill the storage array and out put what we have.
       fillArray(storage,inventory,"inventory:","sale");
-      fillArray(change,inventory,"changes:","array");
+      
      choice=usr.nextInt();
      if(choice>maxIndex||choice<0)System.out.print(message("do not exist"));
      else if(ifFree){
@@ -124,9 +127,6 @@ public class Ecs102_final {
        System.out.println("Here is your "+storage[choice].getName());
        storage[choice].sold();
        System.out.print(message("nice day"));
-        PrintWriter fileOut=new PrintWriter("inventory.txt");
-         fileOut.print(toOutPut(storage,change,maxIndex, buffer));
-         fileOut.close();
        return;
      }
      else
@@ -136,13 +136,10 @@ public class Ecs102_final {
      System.out.println("Your total charge shall be "+ charge+" $");
      currentCash-=charge;
      if(userEnter.equals("3"))
-       System.out.println(change(change,currentCash));
+       System.out.println(change(currentCash));
      
        System.out.print(message("nice day"));
      //
-       PrintWriter fileOut=new PrintWriter("inventory.txt");
-         fileOut.print(toOutPut(storage,change,maxIndex, buffer));
-         fileOut.close();
      usr.close();
      inventory.close();
      pass.close();
@@ -288,15 +285,14 @@ public class Ecs102_final {
      }
      return ans;
    }
-   static String change(Item[]change,double c)
+   static String change(double c)
    {
      double m;
-     //change's indexes
-     int quaters=0; //4
-     int dollars=0; //0
-     int tens=0;    //2
-     int fives=0;   //1
-     int twenties=0;//3
+     int quaters=0;
+     int dollars=0;
+     int tens=0;
+     int fives=0;
+     int twenties=0;
      String ans="Here is your change:\n";
      m=c;
      twenties=(int)m/20;
@@ -306,15 +302,15 @@ public class Ecs102_final {
      m=m-(int)m;
      quaters=(int)(m/0.25);
      for(int i=0;i<twenties;i++)
-     {ans+="20 dollar\n";change[3].sold();}
+       ans+="20 dollar\n";
      for(int i=0;i<tens;i++)
-     {ans+="10 dollar\n";change[2].sold();}
+       ans+="10 dollar\n";
      for(int i=0;i<fives;i++)
-     {ans+="5 dollar\n";change[1].sold();}
+       ans+="5 dollar\n";
      for(int i=0;i<dollars;i++)
-     {ans+="1 dollar\n";change[0].sold();}
+       ans+="1 dollar\n";
      for(int i=0;i<quaters;i++)
-     {ans+="1 quaters\n";change[4].sold();}
+       ans+="1 quaters\n";
      ans+="Here you are.";
      return ans;
    }
@@ -436,21 +432,4 @@ public class Ecs102_final {
        b.price=temp.getPrice();
        b.quantity=temp.getQuantity();
      }
-   public static String toOutPut(Item[]storage,Item[]change,int maxIndex, String buffer){
-     sortArray(storage);
-     String outTxt="";
-         outTxt+="inventory:\n";
-         outTxt+=maxIndex+"\n";
-         for(int i=0;i<maxIndex;i++){ 
-           outTxt+=storage[i].toStringNoSign();
-         }
-         outTxt+="changes:\n";
-         outTxt+="5\n";
-         for(int i=0;i<5;i++){
-           outTxt+=change[i].toStringNoSign();
-         }
-         outTxt+="password:\n";
-         outTxt+=buffer;
-         return outTxt;
-   }
 }

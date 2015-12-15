@@ -1,19 +1,19 @@
 inventory:
-6
-pepsi 1.50 15
-coke  1.50 15
-mountain-dew 1.50 15
-diet-coke 1.50 15
-ginger-ale 1.50 15
-aquafina-pure-water 1.50 15
-
+8
+aquafina-pure-water 1.5 15
+coke 1.5 15
+crush 3.5 20
+diet-coke 1.5 15
+dr.pepper 5.0 5
+ginger-ale 1.5 14
+mountain-dew 1.5 15
+pepsi 1.5 15
 changes:
 5
-1 1.5 15
-5  5 15
-10 10 15
-20 20 15
-25 2.5 15
-
+dollars 1.5 12
+fives 5.0 14
+tens 10.0 14
+twenties 20.0 15
+quaters 2.5 13
 password:
-abc
+abcd

@@ -20,13 +20,6 @@ public class Item {
             price=0.00;
             quantity=0;
         }
-     public Item(Item a)
-     {
-       name=a.name;
-       price=a.price;
-       quantity=a.quantity;
-     }
-     
      public void Item(String n, double p, int q)
         {
             name=n;
@@ -37,15 +30,9 @@ public class Item {
      {
        return price;
      }
-     int getQuantity(){
-       return quantity;
-     }
-     void sold(){
-       quantity--;      
-     }
-     void addQuantity(int q)
-     {
-       quantity=quantity+q;
+     void sold()
+     { quantity--;
+       
      }
      String getName()
      {
@@ -55,12 +42,6 @@ public class Item {
     {
       String ans="";
       ans=(name+" "+price+"$ "+" "+quantity+"\n");
-        return ans;
-    }
-    public String toStringNoSign()
-    {
-      String ans="";
-      ans=(name+" "+price+" "+quantity+"\n");
         return ans;
     }
 }

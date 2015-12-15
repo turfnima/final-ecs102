@@ -1,10 +1,10 @@
 inventory:
 6
 aquafina-pure-water 1.5 15
-coke 1.5 16
-diet-coke 1.5 15
+coke 1.5 15
+diet-coke 1.5 17
 ginger-ale 1.5 15
-mountain-dew 1.5 15
+mountain-dew 1.5 17
 pepsi 1.5 15
 changes:
 5
